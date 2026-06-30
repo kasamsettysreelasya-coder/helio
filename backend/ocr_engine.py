@@ -1,7 +1,5 @@
 import io
 import os
-import numpy as np
-from PIL import Image
 
 # Global reader reference for lazy loading
 reader = None
@@ -27,7 +25,9 @@ def extract_text_from_image(image_bytes: bytes) -> str:
         )
 
     try:
-        # Lazy load easyocr to prevent memory usage at startup
+        # Lazy load heavy dependencies to prevent memory/import issues on startup
+        import numpy as np
+        from PIL import Image
         import easyocr
         
         if reader is None:
