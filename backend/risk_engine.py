@@ -1,3 +1,5 @@
+"""Rule-based clinical risk engine calculating health risk scores and tracking medical category trends."""
+
 from datetime import datetime
 from database import get_db, log_activity
 
