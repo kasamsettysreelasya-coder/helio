@@ -1,3 +1,5 @@
+"""FastAPI local backend serving auth endpoints, medical report parsing, triage rules, and static web application."""
+
 from fastapi import FastAPI, UploadFile, File, HTTPException, Request, Response, Depends
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
