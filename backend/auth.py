@@ -1,3 +1,5 @@
+"""Authentication helper module managing user registrations, password hashing, session tokens, and access control."""
+
 import hashlib
 import secrets
 from datetime import datetime
