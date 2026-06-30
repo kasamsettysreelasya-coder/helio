@@ -1,0 +1,32 @@
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Databases and user uploads
+database/
+!database/.gitkeep
+
+# Local logs
+*.log
+
+# Build outputs
+releases/
+*.apk
+*.zip
+*.tar.gz
+
+# SDKs and temporary run folders
+android-sdk/
+temp_sdk/
+test_run/
+
+# IDE files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

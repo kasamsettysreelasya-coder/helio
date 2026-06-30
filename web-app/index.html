@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HELIO AI - Healthcare Assistant</title>
+    <meta name="description" content="Offline, CPU-first clinical symptom triage and referral note generator. Run triage completely client-side.">
+    
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- External Libs (Local Offline) -->
+    <script src="libs/chart.min.js"></script>
+    <script src="libs/html2pdf.bundle.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- AUTHENTICATION LAYOUT                      -->
+    <!-- ========================================== -->
+    <div id="auth-layout" class="auth-wrapper">
+        <!-- VIEW: LOGIN -->
+        <div id="view-login" class="spa-view auth-card active-view">
+            <div class="logo-area" style="justify-content: center; margin-bottom: 20px;">
+                <h1>HELIO AI</h1>
+                <span class="offline-badge"><span class="pulse-dot"></span> 100% OFFLINE</span>
+            </div>
+            <h2>Welcome Back</h2>
+            <p>Login to your local account</p>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <input type="text" id="login-username" placeholder="Username" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <div class="error-msg" id="login-error"></div>
+                <button type="submit" class="submit-btn auth-btn">Login</button>
+            </form>
+            <p style="margin-top: 15px; text-align: center; font-size: 0.9em;">
+                Don't have an account? <a href="#" onclick="switchView('view-login', 'view-register')">Register here</a>
+            </p>
+        </div>
+
+        <!-- VIEW: REGISTER -->
+        <div id="view-register" class="spa-view auth-card" style="display: none; max-width: 500px;">
+            <div class="logo-area" style="justify-content: center; margin-bottom: 20px;">
+                <h1>HELIO AI</h1>
+            </div>
+            <h2>Create an Account</h2>
+            <p>All data is stored securely on your local device.</p>
+            <form id="register-form" onsubmit="handleRegister(event)" class="register-grid">
+                <input type="text" id="reg-fullname" placeholder="Full Name" required>
+                <input type="text" id="reg-username" placeholder="Username" required>
+                <input type="number" id="reg-age" placeholder="Age" required>
+                <select id="reg-gender" required>
+                    <option value="" disabled selected>Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input type="password" id="reg-password" placeholder="Password" required>
+                <input type="password" id="reg-confirm" placeholder="Confirm Password" required>
+                <input type="text" id="reg-phone" placeholder="Phone Number (Optional)">
+                <input type="text" id="reg-email" placeholder="Email (Optional)">
+                <input type="text" id="reg-emergency" placeholder="Emergency Contact">
+                <select id="reg-blood">
+                    <option value="">Blood Group (Optional)</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="O+">O+</option>
+                    <option value="AB+">AB+</option>
+                </select>
+                <div class="error-msg" id="reg-error" style="grid-column: span 2;"></div>
+                <button type="submit" class="submit-btn auth-btn" style="grid-column: span 2;">Register & Login</button>
+            </form>
+            <p style="margin-top: 15px; text-align: center; font-size: 0.9em;">
+                Already have an account? <a href="#" onclick="switchView('view-register', 'view-login')">Login here</a>
+            </p>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- MAIN APP LAYOUT                            -->
+    <!-- ========================================== -->
+    <div id="app-layout" class="app-container" style="display: none;">
+        
+        <!-- Sidebar / Navigation -->
+        <aside class="control-panel">
+            <header class="app-header">
+                <div class="logo-area">
+                    <h1>HELIO AI</h1>
+                    <span class="offline-badge" id="offline-badge"><span class="pulse-dot"></span> CPU-ONLY</span>
+                </div>
+                <p class="subtitle" id="welcome-username">Welcome, User</p>
+                
+                <!-- Main Navigation -->
+                <nav class="nav-tabs main-nav">
+                    <button class="nav-tab" id="nav-dashboard" onclick="switchMainView('view-dashboard')">🏠 Dashboard</button>
+                    <button class="nav-tab" id="nav-triage" onclick="switchMainView('view-triage')">🏥 Symptom Checker</button>
+                    <button class="nav-tab" id="nav-history" onclick="switchMainView('view-history')">📚 Medical History</button>
+                    <button class="nav-tab" id="nav-profile" onclick="switchMainView('view-profile')">👤 My Profile</button>
+                    <button class="nav-tab" id="nav-admin" onclick="switchMainView('view-admin')" style="display: none; background: #FFF3E0; color: #E65100;">⚙️ Admin Panel</button>
+                    <button class="nav-tab" onclick="logout()" style="margin-top: auto; border: 1px solid #ffcdd2; color: #d32f2f;">🚪 Logout</button>
+                </nav>
+            </header>
+            
+            <div id="triage-sidebar-tools" style="display:none; margin-top: 20px;">
+                <!-- Moving the demo section & scanner here to show ONLY when in Triage mode -->
+                <section class="scanner-section" style="background: #E8F5E9; border: 1px solid #C8E6C9; border-radius: 8px; padding: 15px;">
+                    <h3 style="color: #2E7D32; margin-top: 0; font-size:1em;">📄 Medical Report Scanner</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <input type="file" id="report-upload" accept="image/*" style="display: none;" onchange="handleReportUpload(event)">
+                        <button class="action-btn" onclick="document.getElementById('report-upload').click()" style="background-color: #2E7D32; padding: 8px 12px; width:100%;">📁 Upload Image</button>
+                    </div>
+                    <div id="scanner-progress" style="display: none; margin-top: 10px; color: #2E7D32; font-size: 0.85em;">
+                        ⏳ Extracting text via CPU...
+                    </div>
+                </section>
+                
+                <section class="demo-section" style="margin-top: 15px;">
+                    <h3>Synthetic Demo Cases</h3>
+                    <div class="demo-grid">
+                        <button class="demo-btn" onclick="loadDemoCase(1)"><span class="badge badge-urgent">1</span> Chest Pain</button>
+                        <button class="demo-btn" onclick="loadDemoCase(2)"><span class="badge badge-medium">2</span> Child Fever</button>
+                    </div>
+                </section>
+            </div>
+        </aside>
+
+
+        <!-- Main Display Content Area -->
+        <main class="result-panel">
+            
+            <!-- VIEW: USER DASHBOARD -->
+            <div id="view-dashboard" class="spa-view main-view active-view">
+                <div class="view-heading">
+                    <div>
+                        <h2>Health Dashboard</h2>
+                        <p>Review recent activity or start a new symptom triage.</p>
+                    </div>
+                    <button class="action-btn start-triage-btn" onclick="switchMainView('view-triage')">Start Symptom Check</button>
+                </div>
+                
+                <!-- Risk Meter Widget -->
+                <div class="dashboard-widget risk-widget">
+                    <h3>Your Offline Health Risk Score</h3>
+                    <div class="risk-meter-container">
+                        <div class="risk-meter-bar">
+                            <div class="risk-meter-fill" id="risk-meter-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="risk-labels">
+                            <span>0%</span>
+                            <span>50%</span>
+                            <span>100%</span>
+                        </div>
+                        <h1 id="risk-score-display">--%</h1>
+                        <p id="risk-category-display" class="risk-category">No Recent Scans</p>
+                    </div>
+                </div>
+
+                <!-- Dashboard Stats Grid -->
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Total Scans</span>
+                        <span class="stat-value" id="dash-total-scans">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Referrals Generated</span>
+                        <span class="stat-value" id="dash-total-referrals">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Reports Uploaded</span>
+                        <span class="stat-value" id="dash-total-reports">0</span>
+                    </div>
+                </div>
+                
+                <!-- Risk Trend Chart -->
+                <div class="chart-container" style="margin-top: 20px; background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
+                    <h3>Health Risk Trends</h3>
+                    <canvas id="riskTrendChart" height="100"></canvas>
+                </div>
+            </div>
+
+            <!-- VIEW: TRIAGE (SYMPTOM CHECKER) -->
+            <div id="view-triage" class="spa-view main-view" style="display: none;">
+                <h2>Symptom Checker & Triage</h2>
+                
+                <section class="input-section" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 20px;">
+                    <form id="triage-form" onsubmit="handleTriageSubmit(event)">
+                        <div class="form-group">
+                            <div class="notes-header">
+                                <label for="clinical-notes">Unstructured Notes / Typed Symptoms:</label>
+                                <button type="button" class="mic-btn" onclick="toggleVoiceDictation()">🎙️ Dictate</button>
+                            </div>
+                            <textarea id="clinical-notes" required placeholder="Type patient symptoms, duration, and context..."></textarea>
+                        </div>
+                        
+                        <!-- Vitals -->
+                        <div class="vitals-group" style="margin-top: 15px;">
+                            <div class="vitals-header" onclick="toggleVitalsSection()">
+                                <span>🩺 Patient Vitals (Optional)</span>
+                                <span id="vitals-toggle-arrow">▶</span>
+                            </div>
+                            <div id="vitals-inputs-container" style="display: none; margin-top: 10px;">
+                                <div class="vitals-grid-inputs">
+                                    <div class="vital-input-wrap"><label>Temp (°F)</label><input type="number" step="0.1" id="vital-temp"></div>
+                                    <div class="vital-input-wrap"><label>SpO2 (%)</label><input type="number" id="vital-spo2"></div>
+                                    <div class="vital-input-wrap"><label>HR (bpm)</label><input type="number" id="vital-hr"></div>
+                                    <div class="vital-input-wrap"><label>BP</label><input type="text" id="vital-bp" placeholder="120/80"></div>
+                                    <div class="vital-input-wrap"><label>Weight (kg)</label><input type="number" step="0.1" id="vital-weight"></div>
+                                    <div class="vital-input-wrap"><label>Height (cm)</label><input type="number" step="0.1" id="vital-height"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn" style="margin-top: 15px; width: 100%;">Run Offline Triage</button>
+                    </form>
+                </section>
+                
+                <!-- Triage Results Output -->
+                <div class="triage-results" id="triage-results" style="display: none;">
+                    <div class="result-header-card" id="result-header-card">
+                        <div class="urgency-badge-wrap">
+                            <span class="urgency-label">TRIAGE LEVEL</span>
+                            <div class="urgency-value" id="urgency-value">URGENT</div>
+                        </div>
+                        <div class="confidence-wrap">
+                            <span>Parser Confidence</span>
+                            <strong id="confidence-percentage">95%</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="red-flags-alert" id="red-flags-alert" style="display: none;">
+                        <div class="alert-title">🚨 CRITICAL RED FLAGS DETECTED</div>
+                        <ul class="red-flags-list" id="red-flags-list"></ul>
+                    </div>
+                    
+                    <div class="details-grid">
+                        <div class="result-card action-card">
+                            <h3>Recommended Action</h3>
+                            <p class="action-text" id="action-text"></p>
+                        </div>
+                        <div class="result-card first-aid-card">
+                            <h3>First Aid Advised</h3>
+                            <ul class="first-aid-list" id="first-aid-list"></ul>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card meds-card" id="meds-card-container" style="margin-top: 16px;">
+                        <h3>Suggested Supportive Medications (OTC)</h3>
+                        <ul class="meds-list" id="meds-list"></ul>
+                    </div>
+
+                    <div class="referral-container" id="pdf-export-target">
+                        <h3>Generated Referral Slip</h3>
+                        <div class="referral-slip">
+                            <div class="ticket-border"></div>
+                            <pre class="referral-text" id="referral-text">Loading...</pre>
+                            <div class="ticket-border"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-controls">
+                        <button class="action-btn save-btn" onclick="saveRecord()">Save to History</button>
+                        <button class="action-btn print-btn" onclick="exportPDF()">Export PDF</button>
+                    </div>
+
+                    <!-- Collapsible JSON Block -->
+                    <div class="json-block" id="json-block" style="display: none;">
+                        <div class="json-header">
+                            <h4>Structured Patient JSON Output</h4>
+                        </div>
+                        <pre class="json-output"><code id="json-output-text">{}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: MEDICAL HISTORY -->
+            <div id="view-history" class="spa-view main-view" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>Complete Medical History</h2>
+                    <button class="action-btn print-btn" onclick="exportHistoryPDF()">Download Complete History (PDF)</button>
+                </div>
+                
+                <div class="history-list" id="global-history-list">
+                    <!-- Populated via API -->
+                    <p style="color: #666;">Loading history from SQLite...</p>
+                </div>
+            </div>
+
+            <!-- VIEW: USER PROFILE -->
+            <div id="view-profile" class="spa-view main-view" style="display: none;">
+                <h2>My Profile</h2>
+                <div class="profile-card" style="background: white; padding: 25px; border-radius: 8px; border: 1px solid #eee;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <label>Full Name</label>
+                            <input type="text" id="prof-fullname" class="prof-input" disabled>
+                        </div>
+                        <div>
+                            <label>Username</label>
+                            <input type="text" id="prof-username" class="prof-input" disabled>
+                        </div>
+                        <div>
+                            <label>Age</label>
+                            <input type="text" id="prof-age" class="prof-input" disabled>
+                        </div>
+                        <div>
+                            <label>Gender</label>
+                            <input type="text" id="prof-gender" class="prof-input" disabled>
+                        </div>
+                        <div>
+                            <label>Blood Group</label>
+                            <input type="text" id="prof-blood" class="prof-input" disabled>
+                        </div>
+                        <div>
+                            <label>Emergency Contact</label>
+                            <input type="text" id="prof-emergency" class="prof-input" disabled>
+                        </div>
+                    </div>
+                    <!-- (Editing features would go here) -->
+                </div>
+            </div>
+
+            <!-- VIEW: ADMIN DASHBOARD -->
+            <div id="view-admin" class="spa-view main-view" style="display: none;">
+                <h2>Admin Control Panel (Local System)</h2>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card" style="background: #FFF3E0; border-color: #FFE0B2;">
+                        <span class="stat-label">Total Users</span>
+                        <span class="stat-value" id="admin-total-users">0</span>
+                    </div>
+                    <div class="stat-card" style="background: #E3F2FD; border-color: #BBDEFB;">
+                        <span class="stat-label">Platform Total Scans</span>
+                        <span class="stat-value" id="admin-total-scans">0</span>
+                    </div>
+                    <div class="stat-card" style="background: #FCE4EC; border-color: #F8BBD0;">
+                        <span class="stat-label">High Risk Patients</span>
+                        <span class="stat-value" id="admin-high-risk">0</span>
+                    </div>
+                </div>
+
+                <div class="chart-container" style="margin-top: 20px; background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
+                    <h3>System Demographics (Age Distribution)</h3>
+                    <canvas id="adminAgeChart" height="80"></canvas>
+                </div>
+                
+                <h3 style="margin-top: 30px;">Registered Users Database</h3>
+                <table class="admin-table" id="admin-users-table" style="width: 100%; text-align: left; border-collapse: collapse; background: white;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #ddd;">
+                            <th style="padding: 10px;">ID</th>
+                            <th style="padding: 10px;">Name</th>
+                            <th style="padding: 10px;">Username</th>
+                            <th style="padding: 10px;">Age</th>
+                            <th style="padding: 10px;">Registered</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/auth.js?v=3"></script>
+    <script src="js/dashboard.js?v=3"></script>
+    <script src="js/admin.js?v=3"></script>
+    <script src="js/risk_engine.js?v=3"></script>
+    <!-- Maintain the core logic in app.js -->
+    <script src="app.js?v=3"></script>
+</body>
+</html>

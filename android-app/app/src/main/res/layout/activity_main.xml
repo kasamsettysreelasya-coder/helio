@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.google.com/apk/res/android"
+    xmlns:tools="http://schemas.google.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HELIO AI"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_theme_primary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Offline Health Triage Assistant"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OFFLINE CPU-ONLY"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:background="@color/md_theme_secondary"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:backgroundTint="@color/md_theme_primary"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+
+        <!-- Safety Disclaimer Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:background="@drawable/card_background"
+            android:backgroundTint="#FFF9C4"
+            android:layout_marginBottom="16dp">
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="⚠️ MEDICAL DISCLAIMER"
+                android:textStyle="bold"
+                android:textColor="#5D4037"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Helio AI does NOT diagnose disease. It parses unstructured inputs into referral notes and screens for emergency red flags using a local rule engine. In case of emergency, seek professional care."
+                android:textColor="#5D4037"
+                android:textSize="11sp"/>
+        </LinearLayout>
+
+        <!-- Quick Demo Records -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Load Synthetic Demo Records (Phase 2 Test)"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_marginBottom="16dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                
+                <Button
+                    android:id="@+id/btn_demo_chest_pain"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1. Chest Pain (Urgent)"
+                    android:layout_marginEnd="8dp"/>
+                
+                <Button
+                    android:id="@+id/btn_demo_child_fever"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2. Child Fever (Medium)"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btn_demo_hand_cut"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3. Minor Cut (Low)"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btn_demo_water_burn"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4. Water Burn (Urgent)"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btn_demo_fever_conf"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5. Fever+Confusion (Urgent)"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btn_demo_pregnancy"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="6. Preg. Bleed (Urgent)"
+                    android:layout_marginEnd="8dp"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- Unstructured Input Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/card_background"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Patient Notes &amp; Symptoms"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/et_clinical_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Type symptoms, duration, patient name, age, and details..."
+                android:gravity="top|start"
+                android:inputType="textMultiLine"
+                android:minLines="5"
+                android:textSize="14sp"
+                android:background="@android:drawable/editbox_background_normal"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"/>
+
+            <Button
+                android:id="@+id/btn_process_triage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="RUN OFFLINE CPU TRIAGE"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="@color/md_theme_primary"
+                android:padding="12dp"/>
+        </LinearLayout>
+
+        <!-- Result Section (Initially Invisible) -->
+        <LinearLayout
+            android:id="@+id/layout_result_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Triage Analysis Result"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/card_background"
+                android:layout_marginBottom="16dp">
+                
+                <!-- Urgency Badge & Confidence -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+                    
+                    <TextView
+                        android:id="@+id/tv_triage_level_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="URGENT"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="6dp"
+                        android:background="@color/md_theme_secondary" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tv_confidence_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Confidence: 95%"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary" />
+                </LinearLayout>
+
+                <!-- Red Flags Box -->
+                <LinearLayout
+                    android:id="@+id/layout_red_flags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/bg_urgent"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+                    
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="🚨 CRITICAL RED FLAGS DETECTED"
+                        android:textColor="@color/text_urgent"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="4dp" />
+                    
+                    <TextView
+                        android:id="@+id/tv_red_flags_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="- Severe bleeding\n- Heart pain"
+                        android:textColor="@color/text_urgent"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Action Advice -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Recommended Action:"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"/>
+                <TextView
+                    android:id="@+id/tv_recommended_action"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Seek immediate medical attention / Go to Emergency Room"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="12dp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Referral Card Section -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Generated Referral Note:"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="#F5F5F5"
+                    android:padding="12dp"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="#FAFAFA"
+                    android:elevation="1dp">
+
+                    <TextView
+                        android:id="@+id/tv_referral_card_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Loading..."
+                        android:fontFamily="monospace"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_primary" />
+                </LinearLayout>
+
+                <!-- First Aid Checklist -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Conservative First Aid / Support:"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <TextView
+                    android:id="@+id/tv_first_aid_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="- Apply pressure\n- Rest"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Toggle JSON View -->
+                <Button
+                    android:id="@+id/btn_toggle_json"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Structured JSON Output"
+                    android:textSize="12sp"
+                    android:textColor="@color/md_theme_primary"
+                    android:layout_gravity="start"/>
+
+                <TextView
+                    android:id="@+id/tv_structured_json_output"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="{}"
+                    android:fontFamily="monospace"
+                    android:textSize="11sp"
+                    android:textColor="#37474F"
+                    android:background="#ECEFF1"
+                    android:padding="8dp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Result Actions -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btn_save_record"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Save Record"
+                        android:layout_marginEnd="8dp" />
+
+                    <Button
+                        android:id="@+id/btn_share_referral"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Share Referral"
+                        android:backgroundTint="@color/md_theme_secondary" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Record Registry / Saved History -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/card_background"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Local Patient Registry (SQLite)"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/tv_no_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No records saved yet. Process and save records above."
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:padding="12dp" />
+
+            <!-- Layout to append history dynamically -->
+            <LinearLayout
+                android:id="@+id/layout_history_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

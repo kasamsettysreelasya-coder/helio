@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand colors -->
+    <color name="md_theme_primary">#006A6A</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_secondary">#4A6363</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    
+    <!-- Status & Risk Triage Colors -->
+    <color name="bg_urgent">#FFDAD6</color>
+    <color name="text_urgent">#BA1A1A</color>
+    
+    <color name="bg_high">#FFE0B2</color>
+    <color name="text_high">#E65100</color>
+    
+    <color name="bg_medium">#E0F7FA</color>
+    <color name="text_medium">#006064</color>
+    
+    <color name="bg_low">#E8F5E9</color>
+    <color name="text_low">#1B5E20</color>
+
+    <!-- Neutral colors -->
+    <color name="background">#FAFDFC</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="text_primary">#191C1C</color>
+    <color name="text_secondary">#3F4948</color>
+    <color name="divider">#BEC9C8</color>
+</resources>
