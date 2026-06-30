@@ -1,3 +1,5 @@
+/** HELIO AI - Offline Medical Triage Application Client-Side Controller */
+
 // Triage Demo Cases
 const DEMO_CASES = {
     1: "Patient Rajesh, age 52, male. Complaining of severe crushing chest pain radiating to his left arm and heavy sweating since 2 hours. Extremely anxious.",
