@@ -1,3 +1,5 @@
+"""OCR engine wrapper for extracting medical text using EasyOCR with lazy-loading fallbacks."""
+
 import io
 import os
 
