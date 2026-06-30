@@ -1,4 +1,6 @@
 fastapi
 uvicorn
 python-multipart
-easyocr
+# easyocr is optional and can be installed locally if needed. 
+# It is commented out for Render deployments to avoid OOM issues.
+# easyocr
