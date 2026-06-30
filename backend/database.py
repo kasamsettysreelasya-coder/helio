@@ -1,3 +1,5 @@
+"""Database management module handling SQLite schema initialization, patient reports persistence, and activity logs."""
+
 import sqlite3
 import json
 import os
