@@ -1,3 +1,5 @@
+"""Medical text parser utilizing regular expressions to extract structured fields from unstructured notes."""
+
 import re
 
 def parse_medical_text(raw_text: str) -> dict:
